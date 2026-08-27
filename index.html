@@ -240,7 +240,17 @@ footer li a:hover{color:var(--ivory)}
 
 /* ============ SERVICIOS ============ */
 .services{background:var(--cream)}
+.services-cat{margin-bottom:clamp(20px,3vw,32px)}
+.services-products-cta{background:var(--ivory);border:1px solid rgba(44,39,31,.14);padding:clamp(28px,3vw,40px);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.services-products-cta p{font-size:14px;color:#6b6357;max-width:52ch}
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(44,39,31,.14);border:1px solid rgba(44,39,31,.14)}
+
+/* ============ EVENTOS ============ */
+.event-card{max-width:720px;margin:0 auto;background:var(--cream);border:1px solid rgba(44,39,31,.14);padding:clamp(32px,5vw,56px);position:relative}
+.event-badge{position:absolute;top:0;right:0;background:var(--gold);color:var(--ivory);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;padding:10px 20px}
+.event-meta{display:grid;gap:16px;margin:28px 0 32px;padding:24px 0;border-top:1px solid rgba(44,39,31,.14);border-bottom:1px solid rgba(44,39,31,.14)}
+.event-meta div{font-size:14px;color:#6b6357}
+.event-meta b{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);font-weight:500;margin-bottom:4px}
 .service-card{background:var(--cream);padding:clamp(28px,3vw,38px);transition:background .3s}
 .service-card:hover{background:var(--ivory)}
 .service-card .num{font-family:var(--sans);font-size:11px;letter-spacing:.2em;color:var(--gold);font-weight:500;display:block;margin-bottom:14px}
@@ -368,6 +378,7 @@ footer li a:hover{color:var(--ivory)}
       <a class="nav-link" href="#" data-view="v-home">Inicio</a>
       <a class="nav-link" href="#" data-view="v-home" data-scroll="featured">Tienda</a>
       <a class="nav-link" href="#" data-view="v-servicios">Servicios</a>
+      <a class="nav-link" href="#" data-view="v-eventos">Eventos</a>
       <a class="nav-link" href="#" data-view="v-intenciones">Por intención</a>
       <a class="nav-link" href="#" data-view="v-journal">Rituales</a>
     </nav>
@@ -391,6 +402,7 @@ footer li a:hover{color:var(--ivory)}
   <a href="#" data-view="v-home">Inicio</a>
   <a href="#" data-view="v-home" data-scroll="featured">Tienda</a>
   <a href="#" data-view="v-servicios">Servicios</a>
+  <a href="#" data-view="v-eventos">Eventos</a>
   <a href="#" data-view="v-intenciones">Por intención</a>
   <a href="#" data-view="v-journal">Rituales</a>
   <a href="#" data-view="v-sobre">Sobre mí</a>
@@ -631,25 +643,61 @@ footer li a:hover{color:var(--ivory)}
 
   <section class="services">
     <div class="wrap">
+
+      <div class="services-cat rv">
+        <span class="kicker">🌿 Sesiones y experiencias</span>
+        <h2 class="h-md">Acompañamiento uno a uno.</h2>
+      </div>
       <div class="services-grid">
         <div class="service-card rv"><span class="num">01</span><h3>Constelaciones Familiares</h3><p>Un espacio para revelar y sanar los patrones heredados en el sistema familiar.</p></div>
         <div class="service-card rv d1"><span class="num">02</span><h3>Constelaciones Fluviales</h3><p>Un enfoque somático y fluido para trabajar bloqueos desde el cuerpo y el movimiento.</p></div>
         <div class="service-card rv d2"><span class="num">03</span><h3>Biodescodificación</h3><p>Explora el lenguaje del cuerpo y la posible raíz emocional detrás de un síntoma.</p></div>
         <div class="service-card rv"><span class="num">04</span><h3>Lecturas de Tarot</h3><p>Una guía simbólica para ver con claridad el momento que estás viviendo.</p></div>
-        <div class="service-card rv d1"><span class="num">05</span><h3>Círculos de Cacao</h3><p>Ceremonia grupal con cacao sagrado para abrir el corazón y la conexión.</p></div>
-        <div class="service-card rv d2"><span class="num">06</span><h3>Ceremonias de Cumpleaños</h3><p>Un ritual para honrar tu nuevo ciclo con intención y presencia.</p></div>
-        <div class="service-card rv"><span class="num">07</span><h3>Baños de Sonido</h3><p>Inmersión sonora con cuencos e instrumentos para relajar cuerpo y mente.</p></div>
-        <div class="service-card rv d1"><span class="num">08</span><h3>Yoga y Meditación</h3><p>Prácticas para volver al cuerpo y a la quietud interior.</p></div>
-        <div class="service-card rv d2"><span class="num">09</span><h3>Medicina Natural y Herbolaria</h3><p>Preparaciones y acompañamiento con plantas para el bienestar cotidiano.</p></div>
-        <div class="service-card rv"><span class="num">10</span><h3>Limpiezas Energéticas</h3><p>Trabajo energético para liberar cargas y renovar tu espacio personal.</p></div>
-        <div class="service-card rv d1"><span class="num">11</span><h3>Bendiciones de Hogar</h3><p>Ritual para armonizar y proteger la energía de tu casa.</p></div>
-        <div class="service-card rv d2"><span class="num">12</span><h3>Masaje Uterino</h3><p>Técnica de acompañamiento para la salud y memoria del útero.</p></div>
-        <div class="service-card rv"><span class="num">13</span><h3>Enmantado con Rebozo</h3><p>Envoltura tradicional con rebozo para contener y acompañar procesos de cierre.</p></div>
+        <div class="service-card rv d1"><span class="num">05</span><h3>Sesiones de Meditación</h3><p>Espacios guiados para volver a la calma y la claridad interior.</p></div>
+        <div class="service-card rv d2"><span class="num">06</span><h3>Baños de Sonido</h3><p>Inmersión sonora con cuencos e instrumentos para relajar cuerpo y mente.</p></div>
+        <div class="service-card rv"><span class="num">07</span><h3>Yoga y Círculos de Meditación</h3><p>Prácticas grupales para volver al cuerpo y a la quietud interior.</p></div>
+        <div class="service-card rv d1"><span class="num">08</span><h3>Acompañamiento Holístico</h3><p>Seguimiento personalizado que integra cuerpo, emoción y espíritu.</p></div>
+        <div class="service-card rv d2"><span class="num">09</span><h3>Enmantado Ritual con Rebozo</h3><p>Envoltura tradicional con rebozo para contener y acompañar procesos de cierre.</p></div>
+        <div class="service-card rv"><span class="num">10</span><h3>Masaje de Útero</h3><p>Técnica de acompañamiento para la salud y memoria del útero.</p></div>
       </div>
+
+      <div class="services-cat rv" style="margin-top:clamp(48px,6vw,72px)">
+        <span class="kicker">🔥 Ceremonias y círculos</span>
+        <h2 class="h-md">Espacios de encuentro y ritual.</h2>
+      </div>
+      <div class="services-grid">
+        <div class="service-card rv"><span class="num">01</span><h3>Círculos de Cacao Ceremonial</h3><p>Ceremonia grupal con cacao sagrado para abrir el corazón y la conexión.</p></div>
+        <div class="service-card rv d1"><span class="num">02</span><h3>Ceremonias de Cumpleaños</h3><p>Un ritual para honrar tu nuevo ciclo con intención y presencia.</p></div>
+        <div class="service-card rv d2"><span class="num">03</span><h3>Rituales Personalizados</h3><p>Un ritual diseñado a tu medida para el momento que estás atravesando.</p></div>
+        <div class="service-card rv"><span class="num">04</span><h3>Apertura y Cierre de Ciclos</h3><p>Marca el inicio o el final de una etapa con un ritual consciente.</p></div>
+        <div class="service-card rv d1"><span class="num">05</span><h3>Círculos para Mujeres</h3><p>Un espacio de encuentro, escucha y sanación colectiva entre mujeres.</p></div>
+        <div class="service-card rv d2"><span class="num">06</span><h3>Sonido, Tambor, Cuencos y Voz</h3><p>Viajes sonoros que combinan distintos instrumentos ceremoniales.</p></div>
+      </div>
+
+      <div class="services-cat rv" style="margin-top:clamp(48px,6vw,72px)">
+        <span class="kicker">🌙 Retiros y experiencias especiales</span>
+        <h2 class="h-md">Para sumergirte de lleno.</h2>
+      </div>
+      <div class="services-grid">
+        <div class="service-card rv"><span class="num">✦</span><h3>Despierta Tu Fuego</h3><p>Retiro de 3 días para reconectar con tu fuego interior y tu propósito.</p></div>
+        <div class="service-card rv d1"><span class="num">02</span><h3>Retiros para Mujeres</h3><p>Espacios de varios días dedicados a la sanación y conexión femenina.</p></div>
+        <div class="service-card rv d2"><span class="num">03</span><h3>Workshops</h3><p>Talleres para aprender y profundizar en distintas prácticas holísticas.</p></div>
+        <div class="service-card rv"><span class="num">04</span><h3>Experiencias de Conexión Interior</h3><p>Vivencias diseñadas para el encuentro contigo misma.</p></div>
+      </div>
+
+      <div class="services-cat rv" style="margin-top:clamp(48px,6vw,72px)">
+        <span class="kicker">🪷 Productos</span>
+        <h2 class="h-md">Para acompañar tu práctica en casa.</h2>
+      </div>
+      <div class="services-products-cta rv">
+        <p>Aceites rituales, elixires de cacao, mieles, mezclas herbales, kits ceremoniales y de cumpleaños, productos para altar y más.</p>
+        <a class="btn" href="#" data-view="v-home" data-scroll="featured">Ver la tienda</a>
+      </div>
+
     </div>
   </section>
 
-  <section class="services-contact">
+  <section class="services-contact" id="agenda">
     <div class="wrap rv">
       <span class="kicker" style="color:var(--gold-soft)">Agenda tu sesión</span>
       <h2 class="h-lg">Escríbeme para reservar tu espacio.</h2>
@@ -658,6 +706,37 @@ footer li a:hover{color:var(--ivory)}
         <div class="row"><b>Delriomaggy</b>Instagram</div>
         <div class="row"><b>Delriomaggy</b>Facebook</div>
       </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ -->
+<!-- ======================= VISTA: EVENTOS ======================= -->
+<!-- ============================================================ -->
+<main id="v-eventos" class="view">
+  <div class="page-hero dark">
+    <div class="wrap">
+      <span class="kicker">Comunidad · Sin costo</span>
+      <h1 class="h-xl">Eventos gratuitos.</h1>
+      <p class="lead" style="margin:20px auto 0;max-width:60ch">Círculos abiertos para conocernos, practicar juntas y sostenernos en comunidad — a veces presenciales, a veces en línea.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="event-card rv">
+        <div class="event-badge">Gratis</div>
+        <span class="kicker">Círculo mensual</span>
+        <h2 class="h-lg">Círculo de Cacao Comunitario</h2>
+        <p class="lead" style="margin-top:16px">Un espacio abierto y sin costo para reunirnos en círculo, compartir cacao ceremonial y sostenernos como comunidad. Se repite mes a mes — a veces presencial, a veces en línea.</p>
+        <div class="event-meta">
+          <div><b>Modalidad</b>Presencial o en línea (varía cada mes)</div>
+          <div><b>Cupo</b>Limitado, por orden de reserva</div>
+          <div><b>Próxima fecha</b>Se anuncia por Instagram</div>
+        </div>
+        <a class="btn btn--solid" href="#" data-view="v-servicios" data-scroll="agenda">Reservar mi espacio</a>
+      </div>
+      <p class="lead rv" style="margin-top:clamp(32px,4vw,48px);text-align:center;margin-left:auto;margin-right:auto">¿Quieres enterarte de cada círculo en cuanto se anuncia? Sígueme en <strong>Instagram y Facebook @Delriomaggy</strong> — ahí aviso fecha, modalidad y cupo de cada evento.</p>
     </div>
   </section>
 </main>
@@ -926,6 +1005,7 @@ footer li a:hover{color:var(--ivory)}
         <ul>
           <li><a href="#" data-view="v-home" data-scroll="featured">Tienda</a></li>
           <li><a href="#" data-view="v-servicios">Servicios</a></li>
+          <li><a href="#" data-view="v-eventos">Eventos</a></li>
           <li><a href="#" data-view="v-intenciones">Por intención</a></li>
           <li><a href="#" data-view="v-home" data-scroll="featured">Novedades</a></li>
           <li><a href="#" data-view="v-journal">Rituales</a></li>
