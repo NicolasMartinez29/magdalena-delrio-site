@@ -79,7 +79,7 @@ section{padding:clamp(72px,9vw,130px) 0}
 /* ============ HEADER ============ */
 .announce{background:var(--forest);color:rgba(248,244,237,.85);text-align:center;font-size:11px;letter-spacing:.22em;text-transform:uppercase;padding:11px 16px}
 header{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .5s var(--ease), box-shadow .5s, transform .4s}
-header .bar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;max-width:var(--maxw);margin:0 auto;padding:20px 6vw;gap:20px}
+header .bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;max-width:var(--maxw);margin:0 auto;padding:20px 6vw;gap:20px}
 header.solid{background:rgba(248,244,237,.96);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(44,39,31,.08)}
 header.solid .announce{display:none}
 .nav-left{display:flex;gap:clamp(14px,2vw,30px);align-items:center}
@@ -379,14 +379,14 @@ footer li a:hover{color:var(--ivory)}
       <a class="nav-link" href="#" data-view="v-home" data-scroll="featured">Tienda</a>
       <a class="nav-link" href="#" data-view="v-servicios">Servicios</a>
       <a class="nav-link" href="#" data-view="v-eventos">Eventos</a>
-      <a class="nav-link" href="#" data-view="v-intenciones">Por intención</a>
-      <a class="nav-link" href="#" data-view="v-journal">Rituales</a>
     </nav>
     <a class="logo" href="#" data-view="v-home">
       <span class="name" data-brand>Magdalena DelRio</span>
       <span class="sub">Conscious Transformation Guide</span>
     </a>
     <div class="nav-right">
+      <a class="nav-link search-hide" href="#" data-view="v-intenciones">Por intención</a>
+      <a class="nav-link search-hide" href="#" data-view="v-journal">Rituales</a>
       <a class="nav-link search-hide" href="#" data-view="v-sobre">Sobre mí</a>
       <a class="nav-link search-hide" href="#" data-view="v-journal">Journal</a>
       <button class="icon-btn" aria-label="Buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button>
