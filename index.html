@@ -83,6 +83,7 @@ header .bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;m
 header.solid{background:rgba(248,244,237,.96);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(44,39,31,.08)}
 header.solid .announce{display:none}
 .nav-left{display:flex;gap:clamp(14px,2vw,30px);align-items:center}
+.nav-spacer{visibility:hidden;display:inline-flex}
 .nav-link{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:var(--ivory);position:relative;padding:6px 0;white-space:nowrap;transition:color .4s}
 .nav-link::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
 .nav-link:hover::after{transform:scaleX(1);transform-origin:left}
@@ -337,6 +338,31 @@ footer li a:hover{color:var(--ivory)}
 .toast{position:fixed;bottom:28px;left:50%;transform:translate(-50%,140%);background:var(--forest);color:var(--ivory);padding:15px 34px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;z-index:300;transition:transform .6s var(--ease)}
 .toast.show{transform:translate(-50%,0)}
 
+/* ============ CARRITO ============ */
+.cart-overlay{position:fixed;inset:0;background:rgba(29,36,28,.45);z-index:290;opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+body.cart-open .cart-overlay{opacity:1;pointer-events:auto}
+.cart-panel{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);background:var(--ivory);z-index:291;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .5s var(--ease);box-shadow:-20px 0 60px -20px rgba(44,39,31,.35)}
+body.cart-open .cart-panel{transform:none}
+.cart-head{display:flex;justify-content:space-between;align-items:center;padding:26px 28px;border-bottom:1px solid rgba(44,39,31,.1)}
+.cart-head h3{font-size:22px}
+.cart-head button{background:none;border:none;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest)}
+.cart-items{flex:1;overflow-y:auto;padding:10px 28px}
+.cart-empty{color:#6b6357;font-size:14px;padding:40px 0;text-align:center}
+.cart-item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;padding:18px 0;border-bottom:1px solid rgba(44,39,31,.08);align-items:center}
+.cart-item .thumb{width:64px;height:64px;background-size:cover;background-position:center;background-color:var(--sand)}
+.cart-item .nm{font-family:var(--serif);font-size:16px;line-height:1.3}
+.cart-item .meta{font-size:12px;color:#9a907f;margin-top:2px}
+.cart-item .pr{font-size:13px;color:#6b6357;margin-top:6px}
+.cart-item .qtybox{display:flex;align-items:center;gap:10px;margin-top:8px}
+.cart-item .qtybox button{border:1px solid rgba(44,39,31,.25);background:none;width:24px;height:24px;font-size:13px;line-height:1}
+.cart-item .rm{justify-self:end;align-self:start;background:none;border:none;font-size:11px;letter-spacing:.1em;color:#9a907f;text-decoration:underline}
+.cart-foot{border-top:1px solid rgba(44,39,31,.1);padding:22px 28px 28px}
+.cart-subtotal{display:flex;justify-content:space-between;font-size:15px;margin-bottom:16px}
+.cart-error{color:#a5433a;font-size:12.5px;margin-bottom:12px;display:none}
+.cart-error.show{display:block}
+#checkoutBtn{width:100%}
+#checkoutBtn[disabled]{opacity:.5;cursor:not-allowed}
+
 /* ============ RESPONSIVE ============ */
 @media(max-width:1024px){
   .intent-grid{grid-template-columns:repeat(2,1fr)}
@@ -372,6 +398,7 @@ footer li a:hover{color:var(--ivory)}
   <div class="announce">Preparado en pequeñas cantidades · Envíos cuidados a todo el país</div>
   <div class="bar">
     <nav class="nav-left">
+      <span class="icon-btn nav-spacer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 13H5L6 8z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg></span>
       <button class="icon-btn burger" onclick="toggleMenu()" aria-label="Menú">
         <svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
       </button>
@@ -389,7 +416,7 @@ footer li a:hover{color:var(--ivory)}
       <a class="nav-link search-hide" href="#" data-view="v-journal">Rituales</a>
       <a class="nav-link search-hide" href="#" data-view="v-sobre">Sobre mí</a>
       <a class="nav-link search-hide" href="#" data-view="v-journal">Journal</a>
-      <button class="icon-btn" aria-label="Bolsa"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 13H5L6 8z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg><span class="bag-count" id="bagCount">0</span></button>
+      <button class="icon-btn" aria-label="Bolsa" onclick="toggleCart()"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 13H5L6 8z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg><span class="bag-count" id="bagCount">0</span></button>
     </div>
   </div>
 </header>
@@ -408,6 +435,21 @@ footer li a:hover{color:var(--ivory)}
   <a href="#" data-view="v-home" data-scroll="footer">Contacto</a>
 </div>
 
+<!-- carrito -->
+<div class="cart-overlay" onclick="toggleCart(false)"></div>
+<div class="cart-panel">
+  <div class="cart-head">
+    <h3>Tu bolsa</h3>
+    <button onclick="toggleCart(false)">Cerrar</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <p class="cart-error" id="cartError"></p>
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+    <button class="btn btn--solid" id="checkoutBtn" onclick="checkout()">Pagar con tarjeta</button>
+  </div>
+</div>
+
 <!-- ============================================================ -->
 <!-- ======================= VISTA: HOME ======================== -->
 <!-- ============================================================ -->
@@ -415,7 +457,7 @@ footer li a:hover{color:var(--ivory)}
 
   <!-- HERO -->
   <section class="hero">
-    <div class="ph ph--brown photo" style="background-image:url('assets/collection-cleanse.jpg')" data-label="FOTO · Mujer preparando productos botánicos en una mesa de madera: hierbas, flores secas, frascos de vidrio, aceites y luz de velas. Manos en penumbra — el proceso se sugiere, nunca se muestra."></div>
+    <div class="ph ph--brown photo" style="background-image:url('assets/hero-botanicals.jpg')" data-label="Aceite, bruma, sal de cacao y jabón artesanal sobre lino, luz cálida"></div>
     <div class="veil"></div>
     <div class="hero-content">
       <span class="kicker rise">Botánica · Artesanal · Con intención</span>
@@ -479,13 +521,13 @@ footer li a:hover{color:var(--ivory)}
       <a class="textlink" href="#" data-view="v-home" data-scroll="featured">Ver toda la tienda</a>
     </div>
     <div class="cat-scroller">
-      <a class="cat-card rv" href="#" data-view="v-producto"><div class="ph ph--brown photo" style="background-image:url('assets/amber-oil-editorial.jpg')" data-label="Botella de aceite ámbar, hierbas suspendidas, luz de vela"></div><h3>Aceites ritualizados</h3><p>Preparados en pequeñas cantidades, cada uno con su intención.</p><span class="textlink">Explorar →</span></a>
-      <a class="cat-card rv d1" href="#" data-view="v-producto"><div class="ph ph--cream photo" style="background-image:url('assets/soap-bag.jpg')" data-label="Bañera con pétalos y hierbas flotando, vapor, luz suave"></div><h3>Baños ritualizados</h3><p>Mezclas botánicas pensadas para momentos de retorno a ti.</p><span class="textlink">Explorar →</span></a>
-      <a class="cat-card rv d2" href="#" data-view="v-producto"><div class="ph ph--cream photo" style="background-image:url('assets/sal-maggy.jpg')" data-label="Sal gruesa con romero y flores en cuenco de cerámica"></div><h3>Sales</h3><p>Sales trabajadas con plantas y minerales seleccionados.</p><span class="textlink">Explorar →</span></a>
-      <a class="cat-card rv" href="#" data-view="v-producto"><div class="ph ph--forest photo" style="background-image:url('assets/dropper-single.jpg')" data-label="Goteros de vidrio oscuro sobre madera, botánica alrededor"></div><h3>Tinturas y elixires</h3><p>Concentrados botánicos elaborados con tiempo y cuidado.</p><span class="textlink">Explorar →</span></a>
-      <a class="cat-card rv" href="#" data-view="v-producto"><div class="ph ph--gold photo" style="background-image:url('assets/honey-gift-bag.jpg')" data-label="Frascos de miel con hierbas y especias, luz dorada"></div><h3>Mieles preparadas</h3><p>Dulzura trabajada con intención para endulzar procesos.</p><span class="textlink">Explorar →</span></a>
-      <a class="cat-card rv" href="#" data-view="v-producto"><div class="ph ph--olive photo" style="background-image:url('assets/herb-jar.jpg')" data-label="Manojos de hierbas secas atados con hilo natural"></div><h3>Hierbas</h3><p>Plantas seleccionadas y preparadas para tus propios rituales.</p><span class="textlink">Explorar →</span></a>
-      <a class="cat-card rv" href="#" data-view="v-producto"><div class="ph ph--brown photo" style="background-image:url('assets/collection-ritual.jpg')" data-label="Caja artesanal abierta: vela, aceite, sal y guía impresa"></div><h3>Kits y rituales</h3><p>Conjuntos completos para acompañar un ritual de principio a fin.</p><span class="textlink">Explorar →</span></a>
+      <a class="cat-card rv" href="#" data-view="v-intenciones"><div class="ph ph--brown photo" style="background-image:url('assets/amber-oil-editorial.jpg')" data-label="Botella de aceite ámbar, hierbas suspendidas, luz de vela"></div><h3>Aceites ritualizados</h3><p>Preparados en pequeñas cantidades, cada uno con su intención.</p><span class="textlink">Explorar →</span></a>
+      <a class="cat-card rv d1" href="#" data-view="v-intenciones"><div class="ph ph--cream photo" style="background-image:url('assets/soap-bag.jpg')" data-label="Bañera con pétalos y hierbas flotando, vapor, luz suave"></div><h3>Baños ritualizados</h3><p>Mezclas botánicas pensadas para momentos de retorno a ti.</p><span class="textlink">Explorar →</span></a>
+      <a class="cat-card rv d2" href="#" data-view="v-intenciones"><div class="ph ph--cream photo" style="background-image:url('assets/sal-maggy.jpg')" data-label="Sal gruesa con romero y flores en cuenco de cerámica"></div><h3>Sales</h3><p>Sales trabajadas con plantas y minerales seleccionados.</p><span class="textlink">Explorar →</span></a>
+      <a class="cat-card rv" href="#" data-view="v-intenciones"><div class="ph ph--forest photo" style="background-image:url('assets/dropper-single.jpg')" data-label="Goteros de vidrio oscuro sobre madera, botánica alrededor"></div><h3>Tinturas y elixires</h3><p>Concentrados botánicos elaborados con tiempo y cuidado.</p><span class="textlink">Explorar →</span></a>
+      <a class="cat-card rv" href="#" data-view="v-intenciones"><div class="ph ph--gold photo" style="background-image:url('assets/honey-gift-bag.jpg')" data-label="Frascos de miel con hierbas y especias, luz dorada"></div><h3>Mieles preparadas</h3><p>Dulzura trabajada con intención para endulzar procesos.</p><span class="textlink">Explorar →</span></a>
+      <a class="cat-card rv" href="#" data-view="v-intenciones"><div class="ph ph--olive photo" style="background-image:url('assets/herb-jar.jpg')" data-label="Manojos de hierbas secas atados con hilo natural"></div><h3>Hierbas</h3><p>Plantas seleccionadas y preparadas para tus propios rituales.</p><span class="textlink">Explorar →</span></a>
+      <a class="cat-card rv" href="#" data-view="v-intenciones"><div class="ph ph--brown photo" style="background-image:url('assets/collection-ritual.jpg')" data-label="Caja artesanal abierta: vela, aceite, sal y guía impresa"></div><h3>Kits y rituales</h3><p>Conjuntos completos para acompañar un ritual de principio a fin.</p><span class="textlink">Explorar →</span></a>
     </div>
   </section>
 
@@ -499,7 +541,7 @@ footer li a:hover{color:var(--ivory)}
       <div class="prod-grid">
         <article class="prod-card rv">
           <div class="frame"><div class="ph ph--brown photo" style="background-image:url('assets/obsidian-stone.jpg')" data-label="Piedra de obsidiana sobre bolsa de lino natural"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Piedra Ritual de Protección')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('piedra-proteccion')">Añadir</button><button class="quick" onclick="openProduct('piedra-proteccion')">Vista rápida</button></div></div>
           <span class="intent-tag">Protección</span>
           <h3>Piedra Ritual de Protección</h3>
           <p class="desc">Piedra de obsidiana seleccionada a mano, pensada para acompañar rituales de resguardo personal.</p>
@@ -507,7 +549,7 @@ footer li a:hover{color:var(--ivory)}
         </article>
         <article class="prod-card rv d1">
           <div class="frame"><div class="ph ph--gold photo" style="background-image:url('assets/maggy-oil.jpg')" data-label="Botella azul 'Maggy Amatalquiam' con etiqueta de rosa"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Aceite Ritual Maggy')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('aceite-maggy')">Añadir</button><button class="quick" onclick="openProduct('aceite-maggy')">Vista rápida</button></div></div>
           <span class="intent-tag">Amor</span>
           <h3>Aceite Ritual Maggy</h3>
           <p class="desc">Aceite botánico con esencia de rosas, formulado para invitar amor propio y presencia.</p>
@@ -515,7 +557,7 @@ footer li a:hover{color:var(--ivory)}
         </article>
         <article class="prod-card rv d2">
           <div class="frame"><div class="ph ph--cream photo" style="background-image:url('assets/cacao-jar.jpg')" data-label="Frasco 'Néctar de Cacao Latido Zen' con tapa metálica"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Néctar de Cacao Latido Zen')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('cacao-latido-zen')">Añadir</button><button class="quick" onclick="openProduct('cacao-latido-zen')">Vista rápida</button></div></div>
           <span class="intent-tag">Prosperidad</span>
           <h3>Néctar de Cacao Latido Zen</h3>
           <p class="desc">Mezcla ceremonial de cacao y miel, preparada para conectar con el corazón y abrir presencia.</p>
@@ -523,7 +565,7 @@ footer li a:hover{color:var(--ivory)}
         </article>
         <article class="prod-card rv d3">
           <div class="frame"><div class="ph ph--forest photo" style="background-image:url('assets/spray-lavender.jpg')" data-label="Bruma de Lavanda 'Paz Interior' en frasco facetado"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Bruma de Lavanda Paz Interior')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('bruma-lavanda')">Añadir</button><button class="quick" onclick="openProduct('bruma-lavanda')">Vista rápida</button></div></div>
           <span class="intent-tag">Calma</span>
           <h3>Bruma de Lavanda</h3>
           <p class="desc">Niebla aromática hecha a mano para conectar con tu esencia y sostener momentos de calma.</p>
@@ -700,9 +742,9 @@ footer li a:hover{color:var(--ivory)}
       <span class="kicker" style="color:var(--gold-soft)">Agenda tu sesión</span>
       <h2 class="h-lg">Escríbeme para reservar tu espacio.</h2>
       <div class="rows">
-        <div class="row"><b>612-707-6417</b>Teléfono</div>
-        <div class="row"><b>Delriomaggy</b>Instagram</div>
-        <div class="row"><b>Delriomaggy</b>Facebook</div>
+        <div class="row"><a href="https://wa.me/16127076417" target="_blank" rel="noopener"><b>612-707-6417</b></a>WhatsApp</div>
+        <div class="row"><a href="https://www.instagram.com/Delriomaggy" target="_blank" rel="noopener"><b>Delriomaggy</b></a>Instagram</div>
+        <div class="row"><a href="https://www.facebook.com/Delriomaggy" target="_blank" rel="noopener"><b>Delriomaggy</b></a>Facebook</div>
       </div>
     </div>
   </section>
@@ -746,7 +788,7 @@ footer li a:hover{color:var(--ivory)}
   <div class="pdp wrap">
     <div class="layout">
       <div class="pdp-gallery">
-        <div class="main ph ph--brown photo" style="background-image:url('assets/obsidian-stone.jpg')" data-label="FOTO PRINCIPAL · Piedra de obsidiana sobre bolsa de lino natural"></div>
+        <div class="main ph ph--brown photo" id="pdpMainImg" style="background-image:url('assets/obsidian-stone.jpg')" data-label="Foto principal del producto"></div>
         <div class="pdp-thumbs">
           <div class="ph ph--cream" data-label="Detalle etiqueta"></div>
           <div class="ph ph--forest" data-label="Textura botánica"></div>
@@ -754,12 +796,12 @@ footer li a:hover{color:var(--ivory)}
         </div>
       </div>
       <div class="pdp-info">
-        <span class="crumb">Tienda / Piedras rituales</span>
-        <span class="intent-tag">Intención · Protección</span>
-        <h1>Piedra Ritual de Protección</h1>
-        <p class="price">$26.00</p>
+        <span class="crumb" id="pdpCrumb">Tienda / Piedras rituales</span>
+        <span class="intent-tag" id="pdpIntentTag">Intención · Protección</span>
+        <h1 id="pdpName">Piedra Ritual de Protección</h1>
+        <p class="price" id="pdpPrice">$26.00</p>
         <p class="tax">Impuestos incluidos · Envío calculado al finalizar</p>
-        <p class="emo">Una piedra de obsidiana seleccionada a mano, pensada para acompañar rituales de resguardo, límites y cuidado de tu espacio personal.</p>
+        <p class="emo" id="pdpDesc">Una piedra de obsidiana seleccionada a mano, pensada para acompañar rituales de resguardo, límites y cuidado de tu espacio personal.</p>
 
         <span class="opt-label">Tamaño</span>
         <div class="size-opts">
@@ -770,9 +812,9 @@ footer li a:hover{color:var(--ivory)}
 
         <div class="buy-row">
           <div class="qty"><button onclick="qty(-1)">−</button><span id="qtyVal">1</span><button onclick="qty(1)">+</button></div>
-          <button class="btn btn--solid" style="width:100%" onclick="addToBag('Piedra Ritual de Protección')">Añadir a la bolsa</button>
+          <button class="btn btn--solid" style="width:100%" onclick="addCurrentToBag()">Añadir a la bolsa</button>
         </div>
-        <button class="btn buy-now" onclick="addToBag('Piedra Ritual de Protección')">Comprar ahora</button>
+        <button class="btn buy-now" onclick="addCurrentToBag()">Comprar ahora</button>
 
         <div class="pdp-note">Esta preparación ha sido seleccionada artesanalmente y trabajada con una intención específica antes de llegar a tus manos. El proceso que la acompaña es propio de la casa y forma parte de su valor.</div>
 
@@ -780,17 +822,17 @@ footer li a:hover{color:var(--ivory)}
           <details open>
             <summary>Sobre esta preparación</summary>
             <div class="body">
-              <p>Cada piedra se selecciona en pequeñas cantidades, con un trabajo de intención que acompaña toda la preparación antes de ser entregada.</p>
+              <p>Cada pieza se selecciona en pequeñas cantidades, con un trabajo de intención que acompaña toda la preparación antes de ser entregada.</p>
               <p>No producimos en serie: cada pieza recibe tiempo, atención y cuidado antes de ser entregada.</p>
             </div>
           </details>
           <details>
             <summary>Intención</summary>
-            <div class="body"><p>Tradicionalmente asociado con el resguardo personal y el cuidado del propio espacio. Pensado para acompañar momentos en los que deseas sostener tus límites con claridad.</p></div>
+            <div class="body" id="pdpIntentBody"><p>Tradicionalmente asociado con el resguardo personal y el cuidado del propio espacio. Pensado para acompañar momentos en los que deseas sostener tus límites con claridad.</p></div>
           </details>
           <details>
             <summary>Ingredientes</summary>
-            <div class="body"><p>Piedra de obsidiana natural y bolsa de tela protectora. Cada pieza es única: forma, tamaño y brillo pueden variar levemente.</p></div>
+            <div class="body" id="pdpIngredients"><p>Piedra de obsidiana natural y bolsa de tela protectora. Cada pieza es única: forma, tamaño y brillo pueden variar levemente.</p></div>
           </details>
           <details>
             <summary>Cómo utilizarlo</summary>
@@ -798,11 +840,11 @@ footer li a:hover{color:var(--ivory)}
           </details>
           <details>
             <summary>Qué incluye</summary>
-            <div class="body"><p>Piedra de obsidiana, bolsa de lino protectora y guía de uso sugerido impresa.</p></div>
+            <div class="body"><p>Preparación seleccionada a mano, empaque protector y guía de uso sugerido impresa.</p></div>
           </details>
           <details>
             <summary>Cuidados</summary>
-            <div class="body"><p>Limpiar de tanto en tanto bajo luz de luna o humo de hierbas secas. Evitar golpes fuertes. Por su carácter natural, el brillo y las vetas pueden variar ligeramente entre piezas.</p></div>
+            <div class="body"><p>Conservar en un lugar fresco y seco, lejos de la luz directa. Por su carácter natural y artesanal, cada pieza puede variar levemente respecto a la foto.</p></div>
           </details>
           <details>
             <summary>Preguntas frecuentes</summary>
@@ -817,8 +859,8 @@ footer li a:hover{color:var(--ivory)}
     </div>
   </div>
   <div class="sticky-buy">
-    <div><div class="nm">Piedra Ritual de Protección</div><div class="pr">$26.00 · Pequeña</div></div>
-    <button class="btn btn--solid" onclick="addToBag('Piedra Ritual de Protección')">Añadir</button>
+    <div><div class="nm" id="stickyName">Piedra Ritual de Protección</div><div class="pr" id="stickyPrice">$26.00 · Pequeña</div></div>
+    <button class="btn btn--solid" onclick="addCurrentToBag()">Añadir</button>
   </div>
 </main>
 
@@ -858,25 +900,25 @@ footer li a:hover{color:var(--ivory)}
       <div class="prod-grid">
         <article class="prod-card rv">
           <div class="frame"><div class="ph ph--cream photo" style="background-image:url('assets/soap-bag.jpg')" data-label="Baño de Limpieza en bolsa de lino"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Baño de Limpieza')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('bano-limpieza')">Añadir</button><button class="quick" onclick="openProduct('bano-limpieza')">Vista rápida</button></div></div>
           <span class="intent-tag">Limpieza</span><h3>Baño de Limpieza</h3>
           <p class="desc">Mezcla botánica para acompañar cierres y renovación.</p><p class="price">$32.00</p>
         </article>
         <article class="prod-card rv d1">
           <div class="frame"><div class="ph ph--cream photo" style="background-image:url('assets/sal-maggy-leaf.jpg')" data-label="Sal de Limpieza en frasco de vidrio"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Sal de Limpieza')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('sal-limpieza')">Añadir</button><button class="quick" onclick="openProduct('sal-limpieza')">Vista rápida</button></div></div>
           <span class="intent-tag">Limpieza</span><h3>Sal de Limpieza</h3>
           <p class="desc">Sal trabajada con plantas seleccionadas para tu espacio.</p><p class="price">$26.00</p>
         </article>
         <article class="prod-card rv d2">
           <div class="frame"><div class="ph ph--olive photo" style="background-image:url('assets/incense-bag.jpg')" data-label="Atado de hierbas para quemar"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Atado Botánico')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('atado-botanico')">Añadir</button><button class="quick" onclick="openProduct('atado-botanico')">Vista rápida</button></div></div>
           <span class="intent-tag">Limpieza</span><h3>Atado Botánico</h3>
           <p class="desc">Hierbas secas atadas a mano, pensadas para rituales de humo.</p><p class="price">$22.00</p>
         </article>
         <article class="prod-card rv d3">
           <div class="frame"><div class="ph ph--brown photo" style="background-image:url('assets/herb-jar.jpg')" data-label="Kit de Limpieza: vela, sal, baño y guía"></div>
-            <div class="prod-actions"><button class="add" onclick="addToBag('Kit Ritual de Limpieza')">Añadir</button><button class="quick" data-view="v-producto">Vista rápida</button></div></div>
+            <div class="prod-actions"><button class="add" onclick="addToBag('kit-limpieza')">Añadir</button><button class="quick" onclick="openProduct('kit-limpieza')">Vista rápida</button></div></div>
           <span class="intent-tag">Limpieza</span><h3>Kit Ritual de Limpieza</h3>
           <p class="desc">Un ritual completo, de principio a fin, con guía incluida.</p><p class="price">$68.00</p>
         </article>
@@ -982,6 +1024,42 @@ footer li a:hover{color:var(--ivory)}
   </section>
 </main>
 
+<!-- ============================================================ -->
+<!-- =================== VISTA: PAGO CONFIRMADO ================== -->
+<!-- ============================================================ -->
+<main id="v-exito" class="view">
+  <div class="page-hero dark">
+    <div class="wrap">
+      <span class="kicker">Pedido confirmado</span>
+      <h1 class="h-xl">Gracias por tu compra.</h1>
+      <p class="lead" style="margin:20px auto 0;max-width:60ch" id="exitoDetalle">Estamos preparando tu pedido con la misma intención de siempre. Te contactaremos para coordinar el envío.</p>
+    </div>
+  </div>
+  <section style="text-align:center">
+    <div class="wrap">
+      <a class="btn btn--solid" href="#" data-view="v-home" data-scroll="featured">Seguir explorando</a>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ -->
+<!-- ==================== VISTA: PAGO CANCELADO =================== -->
+<!-- ============================================================ -->
+<main id="v-cancelado" class="view">
+  <div class="page-hero dark">
+    <div class="wrap">
+      <span class="kicker">Pago no completado</span>
+      <h1 class="h-xl">Tu pago se canceló.</h1>
+      <p class="lead" style="margin:20px auto 0;max-width:60ch">No se realizó ningún cargo. Tu bolsa sigue guardada por si quieres intentarlo de nuevo.</p>
+    </div>
+  </div>
+  <section style="text-align:center">
+    <div class="wrap">
+      <a class="btn btn--solid" href="#" data-view="v-home" data-scroll="featured">Volver a la tienda</a>
+    </div>
+  </section>
+</main>
+
 <!-- ================= FOOTER ================= -->
 <footer id="footer">
   <div class="wrap">
@@ -1037,7 +1115,7 @@ footer li a:hover{color:var(--ivory)}
     <p class="disclaimer">Nuestras preparaciones son productos artesanales creados para acompañar rituales e intenciones personales. Las sesiones y prácticas ofrecidas son un acompañamiento complementario. Ninguna de las dos constituye un tratamiento médico ni psicológico, ni sustituye la atención profesional de salud, ni garantiza resultados.</p>
     <div class="foot-bottom">
       <span>© 2026 <span data-brand>Magdalena DelRio</span> · Hecho a mano, en pequeñas cantidades.</span>
-      <div class="socials"><a href="#">Instagram · Delriomaggy</a><a href="#">Facebook · Delriomaggy</a></div>
+      <div class="socials"><a href="https://www.instagram.com/Delriomaggy" target="_blank" rel="noopener">Instagram · Delriomaggy</a><a href="https://www.facebook.com/Delriomaggy" target="_blank" rel="noopener">Facebook · Delriomaggy</a></div>
     </div>
   </div>
 </footer>
@@ -1109,25 +1187,194 @@ document.querySelectorAll('.journal-cats button').forEach(btn => {
   });
 });
 
-/* ===== CARRITO ===== */
-let bag = 0;
-function addToBag(name) {
-  bag++;
-  document.getElementById('bagCount').textContent = bag;
+/* ===== CATÁLOGO (debe coincidir con api/products.js para que el precio mostrado sea el real) ===== */
+const PRODUCTS = {
+  'piedra-proteccion': { name: 'Piedra Ritual de Protección', price: 26, image: 'assets/obsidian-stone.jpg', crumb: 'Tienda / Piedras rituales', intentTag: 'Intención · Protección', desc: 'Una piedra de obsidiana seleccionada a mano, pensada para acompañar rituales de resguardo, límites y cuidado de tu espacio personal.', ingredients: 'Piedra de obsidiana natural y bolsa de tela protectora. Cada pieza es única: forma, tamaño y brillo pueden variar levemente.', intentBody: 'Tradicionalmente asociado con el resguardo personal y el cuidado del propio espacio. Pensado para acompañar momentos en los que deseas sostener tus límites con claridad.' },
+  'aceite-maggy': { name: 'Aceite Ritual Maggy', price: 38, image: 'assets/maggy-oil.jpg', crumb: 'Tienda / Aceites ritualizados', intentTag: 'Intención · Amor', desc: 'Aceite botánico con esencia de rosas, formulado para invitar amor propio y presencia.', ingredients: 'Aceite base botánico, esencia de rosas y hierbas seleccionadas. El color y aroma pueden variar levemente entre lotes.', intentBody: 'Pensado para invitar amor propio, presencia y conexión contigo misma antes que con nadie más.' },
+  'cacao-latido-zen': { name: 'Néctar de Cacao Latido Zen', price: 32, image: 'assets/cacao-jar.jpg', crumb: 'Tienda / Mieles y preparaciones', intentTag: 'Intención · Prosperidad', desc: 'Mezcla ceremonial de cacao y miel, preparada para conectar con el corazón y abrir presencia.', ingredients: 'Cacao ceremonial, miel y especias seleccionadas. Conservar en un lugar fresco y seco.', intentBody: 'Trabajado para abrir el corazón y sostener la presencia en momentos de conexión y abundancia.' },
+  'bruma-lavanda': { name: 'Bruma de Lavanda Paz Interior', price: 28, image: 'assets/spray-lavender.jpg', crumb: 'Tienda / Baños y brumas', intentTag: 'Intención · Calma', desc: 'Niebla aromática hecha a mano para conectar con tu esencia y sostener momentos de calma.', ingredients: 'Agua floral, lavanda y manzanilla. Agitar antes de usar.', intentBody: 'Pensada para sostener momentos de calma y volver a tu centro cuando lo necesites.' },
+  'bano-limpieza': { name: 'Baño de Limpieza', price: 32, image: 'assets/soap-bag.jpg', crumb: 'Tienda / Baños ritualizados', intentTag: 'Intención · Limpieza', desc: 'Mezcla botánica para acompañar cierres y renovación.', ingredients: 'Sales minerales y hierbas de limpieza seleccionadas. Diluir en agua tibia para tu baño ritual.', intentBody: 'Pensado para acompañar cierres, soltura y comienzos.' },
+  'sal-limpieza': { name: 'Sal de Limpieza', price: 26, image: 'assets/sal-maggy-leaf.jpg', crumb: 'Tienda / Sales', intentTag: 'Intención · Limpieza', desc: 'Sal trabajada con plantas seleccionadas para tu espacio.', ingredients: 'Sal gruesa natural y hierbas secas seleccionadas.', intentBody: 'Pensada para limpiar y despejar tu espacio personal.' },
+  'atado-botanico': { name: 'Atado Botánico', price: 22, image: 'assets/incense-bag.jpg', crumb: 'Tienda / Hierbas', intentTag: 'Intención · Limpieza', desc: 'Hierbas secas atadas a mano, pensadas para rituales de humo.', ingredients: 'Hierbas secas atadas con hilo natural. Usar en un espacio ventilado.', intentBody: 'Pensado para rituales de limpieza con humo, en espacios ventilados.' },
+  'kit-limpieza': { name: 'Kit Ritual de Limpieza', price: 68, image: 'assets/herb-jar.jpg', crumb: 'Tienda / Kits y rituales', intentTag: 'Intención · Limpieza', desc: 'Un ritual completo, de principio a fin, con guía incluida.', ingredients: 'Incluye vela, sal de limpieza, baño ritual y guía impresa de uso.', intentBody: 'Un ritual completo de cierre y renovación, de principio a fin.' },
+};
+const money = c => '$' + c.toFixed(2);
+
+/* ===== CARRITO (persistente en localStorage) ===== */
+function loadCart() {
+  try { return JSON.parse(localStorage.getItem('mdr_cart') || '[]'); } catch (e) { return []; }
+}
+function saveCart(cart) {
+  localStorage.setItem('mdr_cart', JSON.stringify(cart));
+  renderCart();
+}
+function addToBag(id, size) {
+  const product = PRODUCTS[id];
+  if (!product) return;
+  const cart = loadCart();
+  const existing = cart.find(i => i.id === id && i.size === (size || null));
+  if (existing) existing.qty += 1;
+  else cart.push({ id, size: size || null, qty: 1 });
+  saveCart(cart);
   const t = document.getElementById('toast');
-  t.textContent = name + ' · añadido a tu bolsa';
+  t.textContent = product.name + ' · añadido a tu bolsa';
   t.classList.add('show');
   clearTimeout(t._h);
   t._h = setTimeout(() => t.classList.remove('show'), 2600);
 }
+function changeCartQty(index, delta) {
+  const cart = loadCart();
+  if (!cart[index]) return;
+  cart[index].qty += delta;
+  if (cart[index].qty <= 0) cart.splice(index, 1);
+  saveCart(cart);
+}
+function removeFromCart(index) {
+  const cart = loadCart();
+  cart.splice(index, 1);
+  saveCart(cart);
+}
+function renderCart() {
+  const cart = loadCart();
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('bagCount').textContent = totalQty;
+  const wrap = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    wrap.innerHTML = '<p class="cart-empty">Tu bolsa está vacía.</p>';
+  } else {
+    wrap.innerHTML = cart.map((item, i) => {
+      const p = PRODUCTS[item.id];
+      if (!p) return '';
+      return `<div class="cart-item">
+        <div class="thumb" style="background-image:url('${p.image}')"></div>
+        <div>
+          <div class="nm">${p.name}</div>
+          ${item.size ? `<div class="meta">Tamaño: ${item.size}</div>` : ''}
+          <div class="pr">${money(p.price)}</div>
+          <div class="qtybox"><button onclick="changeCartQty(${i},-1)">−</button><span>${item.qty}</span><button onclick="changeCartQty(${i},1)">+</button></div>
+        </div>
+        <button class="rm" onclick="removeFromCart(${i})">Quitar</button>
+      </div>`;
+    }).join('');
+  }
+  const subtotal = cart.reduce((s, i) => s + ((PRODUCTS[i.id] ? PRODUCTS[i.id].price : 0) * i.qty), 0);
+  document.getElementById('cartSubtotal').textContent = money(subtotal);
+  document.getElementById('checkoutBtn').disabled = cart.length === 0;
+}
+function toggleCart(force) {
+  const open = typeof force === 'boolean' ? force : !document.body.classList.contains('cart-open');
+  document.body.classList.toggle('cart-open', open);
+  document.body.classList.remove('menu-open');
+  if (open) hideCartError();
+}
+function showCartError(msg) {
+  const el = document.getElementById('cartError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideCartError() {
+  document.getElementById('cartError').classList.remove('show');
+}
+async function checkout() {
+  const cart = loadCart();
+  if (cart.length === 0) return;
+  hideCartError();
+  const btn = document.getElementById('checkoutBtn');
+  btn.disabled = true;
+  btn.textContent = 'Redirigiendo a pago…';
+  try {
+    const res = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: cart.map(i => ({ id: i.id, qty: i.qty, size: i.size })) }),
+    });
+    const data = await res.json();
+    if (res.ok && data.url) {
+      window.location.href = data.url;
+    } else {
+      showCartError(data.error || 'No se pudo iniciar el pago. Intenta de nuevo.');
+      btn.disabled = false;
+      btn.textContent = 'Pagar con tarjeta';
+    }
+  } catch (e) {
+    showCartError('No se pudo conectar con el servidor de pago. Revisa tu conexión.');
+    btn.disabled = false;
+    btn.textContent = 'Pagar con tarjeta';
+  }
+}
+renderCart();
 
-/* ===== PRODUCTO ===== */
+/* ===== PRODUCTO (PDP dinámico) ===== */
+let currentProduct = 'piedra-proteccion';
+let selectedSize = 'Pequeña';
 let q = 1;
 function qty(d) { q = Math.max(1, q + d); document.getElementById('qtyVal').textContent = q; }
 function selSize(btn) {
   btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
+  selectedSize = btn.textContent.trim();
+  updateStickyBuy();
 }
+function addCurrentToBag() {
+  for (let i = 0; i < q; i++) addToBag(currentProduct, selectedSize);
+}
+function updateStickyBuy() {
+  const p = PRODUCTS[currentProduct];
+  document.getElementById('stickyName').textContent = p.name;
+  document.getElementById('stickyPrice').textContent = money(p.price) + ' · ' + selectedSize;
+}
+function openProduct(id) {
+  const p = PRODUCTS[id];
+  if (!p) return;
+  currentProduct = id;
+  q = 1;
+  selectedSize = 'Pequeña';
+  document.getElementById('qtyVal').textContent = 1;
+  document.querySelectorAll('#v-producto .size-opts button').forEach((b, i) => b.classList.toggle('sel', i === 0));
+  document.getElementById('pdpMainImg').style.backgroundImage = `url('${p.image}')`;
+  document.getElementById('pdpCrumb').textContent = p.crumb;
+  document.getElementById('pdpIntentTag').textContent = p.intentTag;
+  document.getElementById('pdpName').textContent = p.name;
+  document.getElementById('pdpPrice').textContent = money(p.price);
+  document.getElementById('pdpDesc').textContent = p.desc;
+  document.getElementById('pdpIngredients').innerHTML = `<p>${p.ingredients}</p>`;
+  document.getElementById('pdpIntentBody').innerHTML = `<p>${p.intentBody}</p>`;
+  updateStickyBuy();
+  views.forEach(v => v.classList.toggle('active', v.id === 'v-producto'));
+  currentView = 'v-producto';
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  initReveal();
+  updateHeader();
+}
+
+/* ===== RESULTADO DE PAGO (Stripe redirige aquí con ?checkout=success|cancel) ===== */
+(function handleCheckoutResult() {
+  const params = new URLSearchParams(window.location.search);
+  const result = params.get('checkout');
+  if (result === 'success') {
+    localStorage.removeItem('mdr_cart');
+    renderCart();
+    views.forEach(v => v.classList.toggle('active', v.id === 'v-exito'));
+    currentView = 'v-exito';
+    const sessionId = params.get('session_id');
+    if (sessionId) {
+      fetch('/api/session-status?session_id=' + encodeURIComponent(sessionId))
+        .then(r => r.json())
+        .then(data => {
+          if (data.email) {
+            document.getElementById('exitoDetalle').textContent = `Enviamos la confirmación a ${data.email}. Estamos preparando tu pedido con la misma intención de siempre.`;
+          }
+        }).catch(() => {});
+    }
+  } else if (result === 'cancel') {
+    views.forEach(v => v.classList.toggle('active', v.id === 'v-cancelado'));
+    currentView = 'v-cancelado';
+  }
+  if (result) {
+    window.history.replaceState({}, '', window.location.pathname);
+    updateHeader();
+  }
+})();
 
 /* ===== NEWSLETTER ===== */
 function newsOk(form) {
@@ -1137,5 +1384,6 @@ function newsOk(form) {
   return false;
 }
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
